@@ -88,7 +88,7 @@ public class Playground {
         strategy.setColumnMapping("key", "value");
         FileWriter writer = new FileWriter("./settings.csv");
         StatefulBeanToCsvBuilder<ValueHolder> csvBuilder = new StatefulBeanToCsvBuilder<>(writer);
-        StatefulBeanToCsv<ValueHolder> beanWriter = csvBuilder.withSeparator(';').withMappingStrategy(strategy).build();
+        StatefulBeanToCsv<ValueHolder> beanWriter = csvBuilder.withSeparator(';').withLineEnd(";" + System.lineSeparator()).withMappingStrategy(strategy).build();
         beanWriter.write(content);
         writer.close();
     }
