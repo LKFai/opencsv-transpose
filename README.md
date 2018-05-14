@@ -17,7 +17,7 @@ DS2:
 "sex";"male";
 ```
 
-It also supports nested JSON to CSV, which makes
+It also supports nested JSON to CSV, which flattens
 ```json
 {
    "name":"Jon",
@@ -29,7 +29,7 @@ It also supports nested JSON to CSV, which makes
    }
 }
 ```
-become
+into
 ```html
 "name";"Jon";
 "age";"30";
