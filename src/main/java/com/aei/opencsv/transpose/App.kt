@@ -18,8 +18,8 @@ import org.springframework.context.ApplicationContext
 import org.springframework.context.ApplicationContextAware
 import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.stereotype.Service
-import java.io.FileWriter
 import java.io.IOException
+import java.io.OutputStreamWriter
 
 
 @SpringBootApplication
@@ -31,20 +31,19 @@ open class Application : CommandLineRunner, ApplicationContextAware {
 
     @Throws(Exception::class)
     override fun run(vararg strings: String) {
-        if (strings.size != 2) {
+        if (strings.size != 1) {
             usage()
             (applicationContext as ConfigurableApplicationContext).close()
             System.exit(1)
         }
         val objectMapper = ObjectMapper()
-        val outputFilename = strings[0]
-        val jsonNode = objectMapper.readTree(strings[1])
-        transposeService!!.transpose(jsonNode, outputFilename)
+        val jsonNode = objectMapper.readTree(strings[0])
+        transposeService!!.transpose(jsonNode)
         LOGGER.info("Transpose Completed")
     }
 
     private fun usage() {
-        LOGGER.info("\n\n\t\tusage: java -jar opencsv-transpose <outputFilename> <jsonBody>\n" + "\t\texample: java -jar opencsv-transpose \"settings.xml\" \"{\\\"name\\\":\\\"Jon\\\", \\\"age\\\":\\\"30\\\", \\\"sex\\\":\\\"male\\\", \\\"mentor\\\": {\\\"name\\\": \\\"Mentor Chan\\\"} }\"\n")
+        LOGGER.info("\n\n\t\tusage: java -jar opencsv-transpose <jsonBody>\n" + "\t\texample: java -jar opencsv-transpose \"{\\\"name\\\":\\\"Jon\\\", \\\"age\\\":\\\"30\\\", \\\"sex\\\":\\\"male\\\", \\\"mentor\\\": {\\\"name\\\": \\\"Mentor Chan\\\"} }\"\n")
     }
 
     @Throws(BeansException::class)
@@ -90,7 +89,7 @@ data class ValueHolder (
 class TransposeService {
 
     @Throws(IOException::class, CsvDataTypeMismatchException::class, CsvRequiredFieldEmptyException::class)
-    fun transpose(jsonNode: JsonNode, outputFilename: String) {
+    fun transpose(jsonNode: JsonNode) {
 
         val content = mutableListOf<ValueHolder>()
         populate(jsonNode, "", content)
@@ -98,7 +97,7 @@ class TransposeService {
         val strategy = ColumnPositionMappingStrategy<ValueHolder>()
         strategy.setType(ValueHolder::class.java)
         strategy.setColumnMapping("key", "value")
-        val writer = FileWriter(outputFilename)
+        val writer = OutputStreamWriter(System.out)
         val csvBuilder = StatefulBeanToCsvBuilder<ValueHolder>(writer)
         val beanWriter = csvBuilder.withSeparator(';')
                 .withLineEnd(";" + System.lineSeparator())
