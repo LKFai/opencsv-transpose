@@ -37,3 +37,8 @@ into
 "mentor.name";"Mentor Chan";
 "mentor.age";"58";
 ```
+
+## Usage
+```java
+java -jar opencsv-transpose <jsonBody>
+```
