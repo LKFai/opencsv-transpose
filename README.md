@@ -40,5 +40,5 @@ into
 
 ## Usage
 ```java
-java -jar opencsv-transpose <jsonBody>
+java -jar opencsv-transpose "{\"name\":\"Jon\", \"age\":\"30\", \"sex\":\"male\", \"mentor\": {\"name\": \"Mentor Chan\"} }"
 ```
